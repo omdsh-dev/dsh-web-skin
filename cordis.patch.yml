@@ -1,0 +1,5 @@
+# dsh bundle patch：把本皮肤插入 profile 的插件层叠。
+# 想临时停用：注释掉下面这段 insert（或整行），重启即可回到官方主题。
+- insert:
+    - id: web-skin
+      name: 'dsh-web-skin'

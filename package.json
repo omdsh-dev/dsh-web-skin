@@ -1,0 +1,62 @@
+{
+  "name": "dsh-web-skin",
+  "version": "0.2.0",
+  "description": "Six-in-one skin pack for the DeepSeek Harness web GUI — 六合一皮肤包：极简灰/粗野主义/莫兰迪/像素/Solarized/Dracula，设置页一键切换（浅色/深色双档）。",
+  "type": "module",
+  "main": "lib/index.js",
+  "license": "MIT",
+  "private": true,
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "theme",
+    "skin",
+    "minimal",
+    "brutalism",
+    "morandi",
+    "pixel",
+    "solarized",
+    "dracula"
+  ],
+  "icon": "./icon.svg",
+  "engines": {
+    "node": ">=18"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "inject": [
+        "@deepseek-ai/dsh-client-store",
+        "@deepseek-ai/dsh-client-locale",
+        "@deepseek-ai/dsh-client-ui-theme",
+        "@deepseek-ai/dsh-client-ui-slots"
+      ],
+      "platform": "web",
+      "immediately": true
+    }
+  },
+  "exports": {
+    ".": "./lib/index.js",
+    "./client": "./lib/client.js",
+    "./cordis.patch.yml": "./cordis.patch.yml",
+    "./locale/*.json": "./locale/*.json",
+    "./palettes/*": "./palettes/*.mjs",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "lib",
+    "palettes",
+    "cordis.patch.yml",
+    "icon.svg",
+    "locale/*.json",
+    "tools"
+  ],
+  "scripts": {
+    "build": "node tools/build.mjs",
+    "check": "node tools/check-palette.mjs",
+    "prepublishOnly": "npm run build && npm run check"
+  }
+}
