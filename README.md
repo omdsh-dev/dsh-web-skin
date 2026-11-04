@@ -24,8 +24,17 @@ The settings row depends on the official `settings.general.item` slot and the sh
 
 ## Install
 
+Published releases carry the compiled, palette-injected `lib/` output, so the
+tarball needs no build:
+
 ```sh
-npm install && npm run build   # first time only: src/*.ts → lib/
+dsh plugin --profile web add "https://github.com/omdsh-dev/dsh-web-skin/releases/latest/download/pkg.tgz"
+```
+
+For local development:
+
+```sh
+npm install --legacy-peer-deps && npm run build   # first time only: tsc + palette injection
 dsh plugin --profile web add /path/to/dsh-web-skin
 ```
 

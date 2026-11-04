@@ -8,8 +8,17 @@
 
 ## 使用
 
+已发布的版本自带编译好、已注入调色板数据的 `lib/` 产物，直接装 tarball 即可：
+
 ```bash
-npm install && npm run build   # 仅首次：src/*.ts → lib/（tsc 编译 + 注入调色板数据）
+# 从最新 release 安装（零运行时依赖，无需构建）
+dsh plugin --profile web add "https://github.com/omdsh-dev/dsh-web-skin/releases/latest/download/pkg.tgz"
+```
+
+本地开发：
+
+```bash
+npm install --legacy-peer-deps && npm run build   # 仅首次：tsc 编译 + 注入调色板数据
 dsh plugin --profile web add /path/to/dsh-web-skin
 ```
 
