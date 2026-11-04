@@ -5,7 +5,6 @@
   "type": "module",
   "main": "lib/index.js",
   "license": "MIT",
-  "private": true,
   "keywords": [
     "dsh",
     "dsh-plugin",
@@ -77,5 +76,12 @@
     "typecheck": "tsc --noEmit",
     "dev": "tsc --watch",
     "prepublishOnly": "npm run build && npm run check"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/omdsh-dev/dsh-web-skin.git"
   }
 }
