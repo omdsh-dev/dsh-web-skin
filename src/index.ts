@@ -1,6 +1,7 @@
 /**
  * dsh-web-skin host entry（Host 侧）。
- * ⚠️ 本文件由 tools/build.mjs 生成，请勿手改（npm run build）。
+ * ⚠️ 本文件（lib/index.js）由 tsc + tools/build.mjs 生成，请勿手改；
+ * 源码在 src/index.ts，改色去 palettes/*.mjs，然后 npm run build。
  *
  * 皮肤本体在客户端（lib/client.js）。Host 侧负责"首帧不闪"：
  *   ① script 行（head、解析阻塞）：读 localStorage 里的皮肤选择，把该皮肤的
@@ -10,13 +11,26 @@
  */
 export const name = 'dsh-web-skin'
 
-const BOOT_SKINS = {"minimal":["#FBFBFA","#0F0F0E"],"brutalism":["#FFFFFF","#121212"],"morandi":["#EAE8E4","#262523"],"pixel":["#F4EED8","#0F380F"],"solarized":["#FDF6E3","#002B36"],"dracula":["#FAF7F0","#282A36"]}
+/** 首帧画布色表（皮肤 id → [浅色, 深色]）；占位符由 tools/build.mjs 注入 palettes/*.mjs 数据。 */
+type BootTable = Record<string, [string, string]>
+
+/** webserver/index-inject 注入表行（本插件只写 script / style 两种）。 */
+type IndexInjectRow =
+	| { kind: 'script'; placement: 'head' | 'body'; text: string }
+	| { kind: 'style'; text: string }
+
+/** Host 侧最小上下文：仅官方 dsh-host-webserver 提供的 webserver/index-inject 事件。 */
+interface SkinHostContext {
+	on(event: 'webserver/index-inject', listener: (table: IndexInjectRow[]) => void): void
+}
+
+const BOOT_SKINS = "@dsh-web-skin/inject:BOOT_SKINS" as unknown as BootTable
 const STORAGE_KEY = "dsh-web-skin:skin"
 const DEFAULT_SKIN = "minimal"
 const BOOT_SCRIPT = "(function(){try{var table=" + JSON.stringify(BOOT_SKINS) + ";var id=localStorage.getItem(" + JSON.stringify(STORAGE_KEY) + ")||" + JSON.stringify(DEFAULT_SKIN) + ";var bg=table[id]||table[" + JSON.stringify(DEFAULT_SKIN) + "];var r=document.documentElement.style;r.setProperty('--dsws-boot-l',bg[0]);r.setProperty('--dsws-boot-d',bg[1]);}catch(e){}})();"
-const BOOT_CSS = "body{background-color:var(--dsws-boot-l,#FBFBFA);--dsh-boot-bg:var(--dsws-boot-l,#FBFBFA)}@media (prefers-color-scheme:dark){body:not([data-ds-dark-theme]){background-color:var(--dsws-boot-d,#0F0F0E);--dsh-boot-bg:var(--dsws-boot-d,#0F0F0E)}}html[data-ds-theme-source=\"light\"] body,html[data-ds-theme-source=\"system\"] body{background-color:var(--dsws-boot-l,#FBFBFA);--dsh-boot-bg:var(--dsws-boot-l,#FBFBFA)}html[data-ds-theme-source=\"dark\"] body{background-color:var(--dsws-boot-d,#0F0F0E);--dsh-boot-bg:var(--dsws-boot-d,#0F0F0E)}@media (prefers-color-scheme:dark){html[data-ds-theme-source=\"system\"] body{background-color:var(--dsws-boot-d,#0F0F0E);--dsh-boot-bg:var(--dsws-boot-d,#0F0F0E)}}body[data-ds-dark-theme]{background-color:var(--dsws-boot-d,#0F0F0E);--dsh-boot-bg:var(--dsws-boot-d,#0F0F0E)}"
+const BOOT_CSS = "@dsh-web-skin/inject:BOOT_CSS"
 
-export function apply(ctx) {
+export function apply(ctx: SkinHostContext) {
 	ctx.on('webserver/index-inject', (table) => {
 		table.push({ kind: 'script', placement: 'head', text: BOOT_SCRIPT })
 		table.push({ kind: 'style', text: BOOT_CSS })
